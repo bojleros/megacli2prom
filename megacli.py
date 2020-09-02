@@ -39,6 +39,7 @@ def main():
 
   metrics= [
     'out["megacli_controller"]={ "help": "Controler information", "type": "gauge" , "metrics": []}',
+    'out["megacli_controller_temperature_celsius"]={ "help": "ROC Temperature", "type": "gauge" , "metrics": []}',
     'out["megacli_memory_size_bytes"]={ "help": "Controler memory information", "type": "gauge" , "metrics": []}',
     'out["megacli_drives"]={ "help": "Drives information", "type": "gauge" , "metrics": []}',
     'out["megacli_memory_errors"]={ "help": "Memory errors", "type": "gauge" , "metrics": []}',
@@ -83,6 +84,12 @@ def main():
       'regex': re.compile('^Memory\s+Size\s+:'),
       'action': [
         'out["megacli_memory_size_bytes"]["metrics"].append({ "labels": { "adapter": adapter, "type": "Total memory" }, "val": tobytes(line.split(":")[1].strip()) })'
+      ]
+    },
+    {
+      'regex': re.compile('^ROC\s+temperature\s+:\s+\d+'),
+      'action': [
+        'out["megacli_controller_temperature_celsius"]["metrics"].append({ "labels": { "adapter": adapter, "type": "ROC temperature" }, "val": line.split(":")[1].split()[0].strip() })'
       ]
     },
     {
