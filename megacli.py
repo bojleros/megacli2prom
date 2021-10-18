@@ -303,7 +303,10 @@ def main():
     print("# HELP " + k + " " + v['help'])
     print("# TYPE " + k + " " + v['type'])
     for m in v['metrics']:
-      print ( str(k) + '{' + ', '.join([ "{}=\"{}\"".format(str(l),str(m['labels'][l])) for l in sorted(m['labels']) ]) + '} ' +  str(m['val']) )
+      clean = str(m['val'])
+      if clean.replace('.','',1).isdigit() == False:
+        clean = '0'
+      print ( str(k) + '{' + ', '.join([ "{}=\"{}\"".format(str(l),str(m['labels'][l])) for l in sorted(m['labels']) ]) + '} ' + clean )
 
 if __name__ == "__main__":
   main()
