@@ -32,8 +32,8 @@ def tobytes(inp):
   return inp
 
 def main():
-  info = subprocess.check_output(['/opt/MegaRAID/MegaCli/MegaCli64', '-AdpAllInfo', '-aAll', '-nolog']).decode('utf-8').splitlines()
-  pdlist = subprocess.check_output(['/opt/MegaRAID/MegaCli/MegaCli64', '-PdList', '-aAll', '-nolog']).decode('utf-8').splitlines()
+  info = subprocess.check_output(['MegaCli64', '-AdpAllInfo', '-aAll', '-nolog']).decode('utf-8').splitlines()
+  pdlist = subprocess.check_output(['MegaCli64', '-PdList', '-aAll', '-nolog']).decode('utf-8').splitlines()
   out = {}
   adapter = None
 
