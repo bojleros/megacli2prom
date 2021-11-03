@@ -300,8 +300,8 @@ def main():
 
 #  print json.dumps(out, indent=2, sort_keys=True)
   for k,v in out.items():
-    print(("# HELP " + k + " " + v['help']))
-    print(("# TYPE " + k + " " + v['type']))
+    print("# HELP " + k + " " + v['help'])
+    print("# TYPE " + k + " " + v['type'])
     for m in v['metrics']:
       clean = str(m['val'])
       if clean.replace('.','',1).isdigit() == False:
