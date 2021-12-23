@@ -32,8 +32,8 @@ def tobytes(inp):
   return inp
 
 def main():
-  info = subprocess.check_output(['/opt/MegaRAID/MegaCli/MegaCli64', '-AdpAllInfo', '-aAll', '-nolog']).decode('utf-8').splitlines()
-  pdlist = subprocess.check_output(['/opt/MegaRAID/MegaCli/MegaCli64', '-PdList', '-aAll', '-nolog']).decode('utf-8').splitlines()
+  info = subprocess.check_output(['MegaCli64', '-AdpAllInfo', '-aAll', '-nolog']).decode('utf-8').splitlines()
+  pdlist = subprocess.check_output(['MegaCli64', '-PdList', '-aAll', '-nolog']).decode('utf-8').splitlines()
   out = {}
   adapter = None
 
@@ -304,8 +304,8 @@ def main():
 
 #  print json.dumps(out, indent=2, sort_keys=True)
   for k,v in out.items():
-    print(("# HELP " + k + " " + v['help']))
-    print(("# TYPE " + k + " " + v['type']))
+    print("# HELP " + k + " " + v['help'])
+    print("# TYPE " + k + " " + v['type'])
     for m in v['metrics']:
       clean = str(m['val'])
       if clean.replace('.','',1).isdigit() == False:
