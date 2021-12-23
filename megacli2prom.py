@@ -295,7 +295,11 @@ def main():
     for p in pat_pd:
       if p['regex'].match(line):
         for a in p['action']:
-          exec(a)
+          try:
+            exec(a)
+          except:
+            print("Exception parsing metric: " + line + ", regex: " + p['regex'].pattern + ", action: " + a, file=sys.stderr)
+            pass
         continue
 
 #  print json.dumps(out, indent=2, sort_keys=True)
