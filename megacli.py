@@ -32,8 +32,8 @@ def tobytes(inp):
   return inp
 
 def main():
-  info = subprocess.check_output(['/opt/MegaRAID/MegaCli/MegaCli64', '-AdpAllInfo', '-aAll', '-nolog']).decode('utf-8').splitlines()
-  pdlist = subprocess.check_output(['/opt/MegaRAID/MegaCli/MegaCli64', '-PdList', '-aAll', '-nolog']).decode('utf-8').splitlines()
+  info = subprocess.check_output(['megacli', '-AdpAllInfo', '-aAll', '-nolog']).decode('utf-8').splitlines()
+  pdlist = subprocess.check_output(['megacli', '-PdList', '-aAll', '-nolog']).decode('utf-8').splitlines()
   out = {}
   adapter = None
 
@@ -50,25 +50,25 @@ def main():
   ]
 
   pat_info = [
-    { 
+    {
       'regex': re.compile('^Adapter\s+#\d+'),
       'action': [
         'adapter=line.split("#")[1].strip()'
       ]
     },
-    { 
+    {
       'regex': re.compile('^Product\s+Name\s+:'),
       'action': [
         'out["megacli_controller"]["metrics"].append({ "labels": { "adapter": adapter, "product_name": line.split(":")[1].strip()}, "val": 1})'
-       ] 
+       ]
     },
-    { 
+    {
       'regex': re.compile('^FW\s+Package\s+Build\s*:'),
       'action': [
         'out["megacli_controller"]["metrics"].append({ "labels": { "adapter": adapter, "package_build": line.split(":")[1].strip()}, "val": 1 })'
        ]
     },
-    { 
+    {
       'regex': re.compile('^FW\s+Version\s+:'),
       'action': [
         'out["megacli_controller"]["metrics"].append({ "labels": { "adapter": adapter, "firmware_version": line.split(":")[1].strip()}, "val": 1 })'
@@ -153,13 +153,13 @@ def main():
       ]
     },
   ]
-  
+
   enclosure=None
   slot=None
   position=None
   device_id=None
   wwn=None
-  
+
   pat_pd = [
     {
       'regex': re.compile('^Adapter\s+#\d+'),
@@ -280,11 +280,11 @@ def main():
       ]
     },
   ]
-  
+
   for m in metrics:
     exec(m)
 
-  for line in info: 
+  for line in info:
     for p in pat_info:
       if p['regex'].match(line):
         for a in p['action']:
@@ -299,7 +299,7 @@ def main():
         continue
 
 #  print json.dumps(out, indent=2, sort_keys=True)
-  for k,v in out.iteritems():
+  for k,v in out.items():
     print("# HELP " + k + " " + v['help'])
     print("# TYPE " + k + " " + v['type'])
     for m in v['metrics']:
