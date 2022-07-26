@@ -3,6 +3,7 @@
 import subprocess
 import re
 import json
+import sys
 
 def yesno(state):
   states = {
