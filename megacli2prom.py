@@ -1,8 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import subprocess
 import re
 import json
+import sys
 
 def yesno(state):
   states = {
@@ -32,15 +33,15 @@ def tobytes(inp):
   return inp
 
 def main():
-  info = subprocess.check_output(['/opt/MegaRAID/MegaCli/MegaCli64', '-AdpAllInfo', '-aAll', '-nolog']).decode('utf-8').splitlines()
-  pdlist = subprocess.check_output(['/opt/MegaRAID/MegaCli/MegaCli64', '-PdList', '-aAll', '-nolog']).decode('utf-8').splitlines()
+  info = subprocess.check_output(['MegaCli64', '-AdpAllInfo', '-aAll', '-nolog']).decode('utf-8').splitlines()
+  pdlist = subprocess.check_output(['MegaCli64', '-PdList', '-aAll', '-nolog']).decode('utf-8').splitlines()
   out = {}
   adapter = None
 
   metrics= [
-    'out["megacli_controller"]={ "help": "Controler information", "type": "gauge" , "metrics": []}',
+    'out["megacli_controller"]={ "help": "Controller information", "type": "gauge" , "metrics": []}',
     'out["megacli_controller_temperature_celsius"]={ "help": "ROC Temperature", "type": "gauge" , "metrics": []}',
-    'out["megacli_memory_size_bytes"]={ "help": "Controler memory information", "type": "gauge" , "metrics": []}',
+    'out["megacli_memory_size_bytes"]={ "help": "Controller memory information", "type": "gauge" , "metrics": []}',
     'out["megacli_drives"]={ "help": "Drives information", "type": "gauge" , "metrics": []}',
     'out["megacli_memory_errors"]={ "help": "Memory errors", "type": "gauge" , "metrics": []}',
     'out["megacli_pd_info"]={ "help": "Physical drive detailed info", "type": "gauge" , "metrics": []}',
@@ -295,15 +296,22 @@ def main():
     for p in pat_pd:
       if p['regex'].match(line):
         for a in p['action']:
-          exec(a)
+          try:
+            exec(a)
+          except:
+            print("Exception parsing metric: " + line + ", regex: " + p['regex'].pattern + ", action: " + a, file=sys.stderr)
+            pass
         continue
 
 #  print json.dumps(out, indent=2, sort_keys=True)
-  for k,v in out.iteritems():
+  for k,v in out.items():
     print("# HELP " + k + " " + v['help'])
     print("# TYPE " + k + " " + v['type'])
     for m in v['metrics']:
-      print ( str(k) + '{' + ', '.join([ "{}=\"{}\"".format(str(l),str(m['labels'][l])) for l in sorted(m['labels']) ]) + '} ' +  str(m['val']) )
+      clean = str(m['val'])
+      if clean.replace('.','',1).isdigit() == False:
+        clean = '0'
+      print(( str(k) + '{' + ', '.join([ "{}=\"{}\"".format(str(l),str(m['labels'][l])) for l in sorted(m['labels']) ]) + '} ' + clean ))
 
 if __name__ == "__main__":
   main()
