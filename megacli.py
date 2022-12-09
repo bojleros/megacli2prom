@@ -18,7 +18,6 @@ def state2int(state):
 def tobytes(inp):
     suffix=['kb','mb','gb','tb']
     i=0
-    out=None
     inp=inp.strip().lower()
 
     while i < len(suffix):
@@ -35,9 +34,9 @@ def main():
     adapter = None
 
     metrics= [
-        'out["megacli_controller"]={ "help": "Controler information", "type": "gauge" , "metrics": []}',
+        'out["megacli_controller"]={ "help": "Controller information", "type": "gauge" , "metrics": []}',
         'out["megacli_controller_temperature_celsius"]={ "help": "ROC Temperature", "type": "gauge" , "metrics": []}',
-        'out["megacli_memory_size_bytes"]={ "help": "Controler memory information", "type": "gauge" , "metrics": []}',
+        'out["megacli_memory_size_bytes"]={ "help": "Controller memory information", "type": "gauge" , "metrics": []}',
         'out["megacli_drives"]={ "help": "Drives information", "type": "gauge" , "metrics": []}',
         'out["megacli_memory_errors"]={ "help": "Memory errors", "type": "gauge" , "metrics": []}',
         'out["megacli_pd_info"]={ "help": "Physical drive detailed info", "type": "gauge" , "metrics": []}',
@@ -296,7 +295,6 @@ def main():
                     exec(a, globals())
                 continue
 
-#  print json.dumps(out, indent=2, sort_keys=True)
     for k,v in iter(out.items()):
         print("# HELP " + k + " " + v['help'])
         print("# TYPE " + k + " " + v['type'])
